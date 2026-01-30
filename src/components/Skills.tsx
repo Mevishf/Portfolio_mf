@@ -1,87 +1,76 @@
-import { Code2, Palette, Brain, Network, TrendingUp } from 'lucide-react';
+import FadeIn from './FadeIn';
+import FlowingMenu from './FlowingMenu';
 
-const skills = [
+const skillItems = [
   {
-    category: 'Programming Languages',
-    icon: Code2,
-    items: ['Python', 'C', 'Java', 'MySQL'],
-    color: 'from-cyan-500 to-teal-500',
+    link: '#',
+    text: 'Programming Languages',
+    images: [
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg'
+    ]
   },
   {
-    category: 'Web Technologies',
-    icon: Network,
-    items: ['HTML', 'CSS', 'JavaScript'],
-    color: 'from-blue-500 to-sky-500',
+    link: '#',
+    text: 'Web Technologies',
+    images: [
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg'
+    ]
   },
   {
-    category: 'Technologies',
-    icon: Brain,
-    items: ['Google Cloud', 'Blockchain'],
-    color: 'from-purple-500 to-violet-500',
+    link: '#',
+    text: 'DevOps',
+    images: [
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jenkins/jenkins-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/gradle/gradle-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/maven/maven-original.svg'
+    ]
   },
   {
-    category: 'Developer Tools',
-    icon: Palette,
-    items: ['VS Code', 'Figma', 'Canva', 'Adobe XD'],
-    color: 'from-pink-500 to-rose-500',
+    link: '#',
+    text: 'Developer Tools',
+    images: [
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg'
+    ]
   },
   {
-    category: 'DevOps Tools',
-    icon: TrendingUp,
-    items: ['Maven', 'Gradle', 'Jenkins'],
-    color: 'from-orange-500 to-red-500',
-  },
+    link: '#',
+    text: 'Technologies',
+    images: [
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg'
+    ]
+  }
 ];
 
 export default function Skills() {
   return (
-    <section id="skills" className="py-24 px-6">
+    <section id="skills" className="py-16 px-6 relative z-10 bg-transparent">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-900 dark:text-blue-100 mb-4">
-            Technical Skills
-          </h2>
-          <p className="text-blue-700 dark:text-blue-300 text-lg max-w-2xl mx-auto">
-            A comprehensive toolkit built through hands-on experience and continuous learning
-          </p>
-          <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto rounded-full mt-4"></div>
-        </div>
+        <FadeIn>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif-display font-medium text-[#16253E] mb-6">
+              Supporting Characters
+            </h2>
+            <div className="w-24 h-1 bg-[#16253E] mx-auto mt-6"></div>
+          </div>
+        </FadeIn>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {skills.map((skill, index) => {
-            const Icon = skill.icon;
-            return (
-              <div
-                key={index}
-                className="relative group"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-
-                <div className="relative bg-white dark:bg-blue-900/40 rounded-2xl p-8 border border-blue-200 dark:border-blue-800 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all duration-300">
-                  <div
-                    className={`w-14 h-14 rounded-xl bg-gradient-to-br ${skill.color} flex items-center justify-center mb-6`}
-                  >
-                    <Icon className="w-7 h-7 text-white" />
-                  </div>
-
-                  <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 mb-4">
-                    {skill.category}
-                  </h3>
-
-                  <div className="flex flex-wrap gap-2">
-                    {skill.items.map((item, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1 text-xs bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 rounded-lg"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="bg-white rounded-[3rem] border-4 border-[#16253E] overflow-hidden" style={{ height: '600px', position: 'relative' }}>
+          <FlowingMenu
+            items={skillItems}
+            speed={15}
+            textColor="#16253E"
+            bgColor="transparent"
+            marqueeBgColor="#FFE6EA"
+            marqueeTextColor="#16253E"
+            borderColor="#16253E"
+          />
         </div>
       </div>
     </section>

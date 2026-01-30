@@ -1,76 +1,87 @@
-import { Cloud, Waves, Sparkles } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export default function Hero() {
-  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"]
+  });
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center justify-center px-6 pt-20"
+      ref={ref}
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 pb-16"
     >
-      <div
-        className={`text-center max-w-4xl transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
+      {/* Massive Name Text - Behind Image */}
+      <motion.div
+        style={{ y, opacity }}
+        className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none select-none"
       >
-        <div className="flex items-center justify-center gap-4 mb-6">
-          <Waves className="w-8 h-8 text-cyan-500 animate-pulse" />
-          <Sparkles className="w-6 h-6 text-sky-400" />
-          <Cloud className="w-8 h-8 text-blue-400 animate-pulse" />
-        </div>
-
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-600 via-blue-600 to-sky-500 bg-clip-text text-transparent leading-tight">
-          Mevish Fatima
+        <h1 className="flex flex-col items-center justify-center">
+          <span className="text-[12vw] md:text-[13vw] font-serif-display font-bold text-[#16253E] tracking-tight uppercase whitespace-nowrap leading-none scale-y-110">
+            PORTFOLIO
+          </span>
         </h1>
+      </motion.div>
 
-        <p className="text-xl md:text-2xl text-blue-800 dark:text-blue-200 mb-4 font-light">
-          Creative Developer & Designer
-        </p>
+      {/* Profile Avatar - Central Overlapping Element */}
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="relative z-10 mt-0 flex flex-col items-center"
+      >
+        <div className="w-56 h-72 md:w-[22rem] md:h-[28rem] relative group mb-6">
+          {/* Decorative halo/glow behind image to separate it from text */}
+          <div className="absolute -inset-8 bg-[#E8EBF5]/60 blur-3xl rounded-full"></div>
 
-        <p className="text-lg text-blue-900 dark:text-blue-50 max-w-2xl mx-auto leading-relaxed font-medium">
-          Computer Science student passionate about AI, blockchain, and creating
-          beautiful digital experiences. From NLP chatbots to smart contracts, I build
-          technology that solves real problems with elegance and impact.
-        </p>
-
-        <div className="mt-12 flex gap-4 justify-center">
-          <button
-            onClick={() =>
-              document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
-            }
-            className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
-          >
-            View My Work
-          </button>
-          <button
-            onClick={() =>
-              document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
-            }
-            className="px-8 py-3 border-2 border-cyan-500 text-cyan-600 dark:text-cyan-400 rounded-full hover:bg-cyan-50 dark:hover:bg-cyan-950/50 transition-all duration-300"
-          >
-            Get in Touch
-          </button>
-        </div>
-
-        <div className="mt-16 flex justify-center gap-8 text-blue-400">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">8.7</div>
-            <div className="text-sm">CGPA</div>
+          {/* Image Container - Dome Shape */}
+          <div className="relative h-full w-full overflow-hidden rounded-t-[14rem] rounded-b-none border-4 border-[#16253E] shadow-2xl bg-[#C1C6D3]/20">
+            <img
+              src="/profile.png"
+              alt="Mevish Fatima"
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+            />
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">3</div>
-            <div className="text-sm">Major Projects</div>
+
+          {/* Floating Badge (like the flower in reference, but functional) - Top Right */}
+          <div className="absolute -right-6 top-12 bg-[#053B2D] text-[#FFE6EA] p-2 rounded-full w-20 h-20 flex items-center justify-center text-center text-[0.6rem] font-bold uppercase tracking-wider rotate-12 shadow-lg animate-[spin_12s_linear_infinite]">
+            Creative Designer
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-sky-600 dark:text-sky-400">Published</div>
-            <div className="text-sm">Research</div>
+
+          {/* Floating Badge 2 - Bottom Left */}
+          <div className="absolute -left-6 bottom-12 bg-[#16253E] text-[#FFE6EA] p-2 rounded-full w-16 h-16 flex items-center justify-center text-center text-[0.6rem] font-bold uppercase tracking-wider -rotate-12 shadow-lg">
+            Dev
           </div>
         </div>
-      </div>
+
+        {/* Name below image */}
+        <h2 className="text-2xl md:text-4xl font-sans font-bold text-[#16253E] tracking-[0.2em] uppercase text-center relative z-20 mb-6">
+          Mevish Fatima
+        </h2>
+
+        {/* CTAs - Centered */}
+        <div className="flex items-center justify-center gap-6 relative z-20">
+          <button
+            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+            className="group px-8 py-3 bg-[#16253E] text-[#FFE6EA] rounded-full font-serif-display italic text-lg tracking-wider hover:bg-[#053B2D] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
+          >
+            View Works
+          </button>
+
+          <button
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            className="group px-8 py-3 bg-transparent border-2 border-[#16253E] text-[#16253E] rounded-full font-sans font-bold text-sm tracking-widest uppercase hover:bg-[#16253E] hover:text-[#E8EBF5] transition-all duration-300"
+          >
+            Contact
+          </button>
+        </div>
+      </motion.div>
     </section>
   );
 }

@@ -2,13 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300..700&display=swap');
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    @apply text-slate-900 dark:text-slate-100;
+    /* Palette: Cloud White Background */
+    @apply bg-[#E8EBF5] text-[#807178];
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Playfair Display', serif;
+    @apply text-[#16253E];
   }
 }
 
@@ -16,33 +30,65 @@
   .text-balance {
     text-wrap: balance;
   }
-}
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+  .font-serif-display {
+    font-family: 'Playfair Display', serif;
   }
-  50% {
-    transform: translateY(-20px);
-  }
-}
 
-@keyframes wave {
-  0% {
-    transform: translateX(0) translateY(0);
-  }
-  50% {
-    transform: translateX(-25%) translateY(-10px);
-  }
-  100% {
-    transform: translateX(0) translateY(0);
+  .font-outfit {
+    font-family: 'Outfit', sans-serif;
   }
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
+@layer utilities {
+  @keyframes border-rotate {
+    0% {
+      background-position: 0% 50%;
+    }
 
-.animate-wave {
-  animation: wave 8s ease-in-out infinite;
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-border-gradient {
+    background-size: 200% 200%;
+    animation: border-rotate 3s ease infinite;
+  }
+
+  @keyframes star-movement-bottom {
+    0% {
+      transform: translate(0%, 0%);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translate(-100%, 0%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes star-movement-top {
+    0% {
+      transform: translate(0%, 0%);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translate(100%, 0%);
+      opacity: 0;
+    }
+  }
+
+  .animate-star-movement-bottom {
+    animation: star-movement-bottom 6s linear infinite alternate;
+  }
+
+  .animate-star-movement-top {
+    animation: star-movement-top 6s linear infinite alternate;
+  }
 }

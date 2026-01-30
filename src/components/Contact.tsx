@@ -1,4 +1,5 @@
 import { Mail, Send, Github, Linkedin } from 'lucide-react';
+import FadeIn from './FadeIn';
 import { useState } from 'react';
 
 export default function Contact() {
@@ -9,15 +10,33 @@ export default function Contact() {
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
 
-    setTimeout(() => {
+    try {
+      const response = await fetch('http://localhost:3001/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
+
       setStatus('sent');
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setStatus('idle'), 3000);
-    }, 1500);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again.');
+      setStatus('idle');
+    }
   };
 
   const handleChange = (
@@ -30,145 +49,156 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24 px-6 bg-white/30 dark:bg-blue-950/30">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-900 dark:text-blue-100 mb-4">
-            Let's Connect
-          </h2>
-          <p className="text-blue-700 dark:text-blue-300 text-lg">
-            I'd love to hear from you about projects, collaborations, or just to chat
-          </p>
-          <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto rounded-full mt-4"></div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-12">
-          <div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-blue-800 dark:text-blue-200 mb-2"
-                >
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-blue-300 dark:border-blue-600 bg-white dark:bg-blue-900/40 text-blue-900 dark:text-blue-100 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
-                  placeholder="Captain of the ship..."
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-blue-800 dark:text-blue-200 mb-2"
-                >
-                  Your Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-blue-300 dark:border-blue-600 bg-white dark:bg-blue-900/40 text-blue-900 dark:text-blue-100 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
-                  placeholder="your@email.com"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-blue-800 dark:text-blue-200 mb-2"
-                >
-                  Your Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={5}
-                  className="w-full px-4 py-3 rounded-xl border border-blue-300 dark:border-blue-600 bg-white dark:bg-blue-900/40 text-blue-900 dark:text-blue-100 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all resize-none"
-                  placeholder="Write your message here..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === 'sending'}
-                className="w-full px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {status === 'sending' ? (
-                  'Sending...'
-                ) : status === 'sent' ? (
-                  'Message Sent!'
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    Cast the Bottle
-                  </>
-                )}
-              </button>
-            </form>
+    <section id="contact" className="py-16 px-6 bg-transparent">
+      <div className="max-w-5xl mx-auto">
+        <FadeIn>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl lg:text-7xl font-serif-display font-medium text-[#16253E] mb-6">
+              Let's Connect
+            </h2>
+            <p className="text-[#C1C6D3] text-xl font-sans max-w-2xl mx-auto">
+              I'd love to hear from you about projects, collaborations, or just to chat
+            </p>
           </div>
+        </FadeIn>
 
-          <div className="space-y-8">
-            <div className="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/30 rounded-2xl p-8 border border-cyan-200 dark:border-cyan-800">
-              <div className="flex items-center gap-3 mb-4">
-                <Mail className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
-                <h3 className="text-xl font-semibold text-blue-900 dark:text-blue-100">
-                  Email
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          <FadeIn delay={0.2} direction="right" fullWidth>
+            <div className="bg-[#FFE6EA] p-8 rounded-3xl shadow-[8px_8px_0px_rgba(22,37,62,1)] border-2 border-[#16253E]">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-bold text-[#16253E] mb-2 font-sans uppercase tracking-wider"
+                  >
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-xl border-2 border-[#16253E]/20 bg-white text-[#16253E] placeholder-[#807178]/50 focus:outline-none focus:ring-4 focus:ring-[#16253E]/10 transition-all font-sans"
+                    placeholder="Captain of the ship..."
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-bold text-[#16253E] mb-2 font-sans uppercase tracking-wider"
+                  >
+                    Your Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-xl border-2 border-[#16253E]/20 bg-white text-[#16253E] placeholder-[#807178]/50 focus:outline-none focus:ring-4 focus:ring-[#16253E]/10 transition-all font-sans"
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-bold text-[#16253E] mb-2 font-sans uppercase tracking-wider"
+                  >
+                    Your Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    rows={5}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-[#16253E]/20 bg-white text-[#16253E] placeholder-[#807178]/50 focus:outline-none focus:ring-4 focus:ring-[#16253E]/10 transition-all resize-none font-sans"
+                    placeholder="Write your message here..."
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={status === 'sending'}
+                  className="w-full px-8 py-4 bg-[#324561] text-white rounded-xl hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 flex items-center justify-center gap-2 font-bold disabled:opacity-50 disabled:cursor-not-allowed text-lg font-sans"
+                >
+                  {status === 'sending' ? (
+                    'Sending...'
+                  ) : status === 'sent' ? (
+                    'Message Sent!'
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Send Message
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.4} direction="left" fullWidth>
+            <div className="space-y-8">
+              <div className="bg-[#16253E] rounded-3xl p-8 border-2 border-[#E8EBF5]/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-[#FFE6EA] rounded-full text-[#16253E]">
+                    <Mail className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#FFE6EA] font-serif-display">
+                    Email
+                  </h3>
+                </div>
+                <p className="text-[#E8EBF5]/80 mb-6 text-lg">
+                  Reach out directly or let me know your message form side:
+                </p>
+                <a
+                  href="mailto:mevishf@gmail.com"
+                  className="text-[#FFE6EA] hover:text-[#FFE6EA]/80 underline decoration-2 underline-offset-4 font-medium text-2xl break-all"
+                >
+                  mevishf@gmail.com
+                </a>
+                <p className="text-[#E8EBF5]/60 mt-6 text-sm font-mono">
+                  Phone: +91 9326496248
+                </p>
+              </div>
+
+              <div className="bg-[#053B2D] rounded-3xl p-8 border-2 border-[#E8EBF5]/20">
+                <h3 className="text-2xl font-bold text-[#FFE6EA] mb-6 font-serif-display">
+                  Connect on Social
                 </h3>
-              </div>
-              <p className="text-blue-700 dark:text-blue-300 mb-4 text-sm">
-                Reach out directly or let me know your message below:
-              </p>
-              <a
-                href="mailto:mevishf@gmail.com"
-                className="text-cyan-600 dark:text-cyan-400 hover:underline font-medium text-lg"
-              >
-                mevishf@gmail.com
-              </a>
-              <p className="text-blue-700 dark:text-blue-300 mt-4 text-sm">
-                Phone: +91 9326496248
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/50 dark:to-blue-950/50 rounded-2xl p-8 border border-blue-200 dark:border-blue-700">
-              <h3 className="text-xl font-semibold text-blue-900 dark:text-blue-100 mb-6">
-                Connect on Social
-              </h3>
-              <div className="space-y-4">
-                <a
-                  href="https://github.com/Mevishf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-blue-700 dark:text-blue-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                >
-                  <Github className="w-5 h-5" />
-                  <span>Mevishf</span>
-                </a>
-                <a
-                  href="https://linkedin.com/in/Mevishf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-blue-700 dark:text-blue-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                >
-                  <Linkedin className="w-5 h-5" />
-                  <span>Mevishf</span>
-                </a>
+                <div className="flex flex-col gap-4">
+                  <a
+                    href="https://github.com/Mevishf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 text-[#E8EBF5] hover:text-[#FFE6EA] transition-colors group"
+                  >
+                    <div className="p-2 border border-[#E8EBF5]/30 rounded-lg group-hover:bg-[#FFE6EA] group-hover:text-[#053B2D] transition-colors">
+                      <Github className="w-6 h-6" />
+                    </div>
+                    <span className="text-xl">Github / Mevishf</span>
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/mevish-f-54b777237/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 text-[#E8EBF5] hover:text-[#FFE6EA] transition-colors group"
+                  >
+                    <div className="p-2 border border-[#E8EBF5]/30 rounded-lg group-hover:bg-[#FFE6EA] group-hover:text-[#053B2D] transition-colors">
+                      <Linkedin className="w-6 h-6" />
+                    </div>
+                    <span className="text-xl">LinkedIn / Mevishf</span>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
+          </FadeIn>
         </div>
       </div>
     </section>

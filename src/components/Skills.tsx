@@ -4,7 +4,7 @@ import FlowingMenu from './FlowingMenu';
 const skillItems = [
   {
     link: '#',
-    text: 'Programming Languages',
+    text: 'Programming',
     images: [
       'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg',
       'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg',
@@ -31,7 +31,7 @@ const skillItems = [
   },
   {
     link: '#',
-    text: 'Developer Tools',
+    text: 'Tools',
     images: [
       'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg',
       'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg',
@@ -50,18 +50,18 @@ const skillItems = [
 
 export default function Skills() {
   return (
-    <section id="skills" className="py-16 px-6 relative z-10 bg-transparent">
+    <section id="skills" className="py-12 sm:py-16 px-4 sm:px-6 relative z-10 bg-transparent">
       <div className="max-w-7xl mx-auto">
         <FadeIn>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif-display font-medium text-[#16253E] mb-6">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif-display font-medium text-[#16253E] mb-4 sm:mb-6">
               Supporting Characters
             </h2>
-            <div className="w-24 h-1 bg-[#16253E] mx-auto mt-6"></div>
+            <div className="w-20 sm:w-24 h-1 bg-[#16253E] mx-auto mt-4 sm:mt-6"></div>
           </div>
         </FadeIn>
 
-        <div className="bg-white rounded-[3rem] border-4 border-[#16253E] overflow-hidden" style={{ height: '600px', position: 'relative' }}>
+        <div className="bg-white rounded-[2rem] sm:rounded-[3rem] border-2 sm:border-4 border-[#16253E] overflow-hidden" style={{ height: '400px', minHeight: '400px', maxHeight: '600px', position: 'relative' }}>
           <FlowingMenu
             items={skillItems}
             speed={15}

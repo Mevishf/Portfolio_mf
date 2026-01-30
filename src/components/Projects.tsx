@@ -7,14 +7,14 @@ const projects: ChromaItem[] = [
     title: 'Chatbot Integration in Ticketing Systems',
     subtitle: 'Built an NLP-powered chatbot to automate museum ticket bookings and reduce queue times.',
     handle: 'Python • Flask • NLP',
-    borderColor: '#2C3E50', // Dark Blue Grey
-    gradient: 'linear-gradient(135deg, transparent, transparent)', // Transparent or subtle
+    borderColor: '#BFDBFE', // Pastel Blue (Blue 200)
+    gradient: 'linear-gradient(135deg, transparent, transparent)',
     url: 'https://github.com/Mevishf/Museum-chatbot-ticketing-system',
   },
   {
     image: '/images/deepfake-detection.jpg',
     title: 'DeepFake Detection in Aerial Images Using Explainable AI',
-    subtitle: 'Built an AI system to detect manipulated aerial/satellite images using CNN and Vision Transformers. Applied Grad-CAM and SHAP for interpretability.',
+    subtitle: 'AI system to detect manipulated aerial images using CNN and Vision Transformers with Grad-CAM and SHAP.',
     handle: 'Python • Deep Learning • XAI',
     borderColor: '#0F172A', // Slate 900
     gradient: 'linear-gradient(135deg, transparent, transparent)',
@@ -23,9 +23,9 @@ const projects: ChromaItem[] = [
   {
     image: '/images/campus-karma.jpg',
     title: 'Campus Karma Coins – Blockchain Reward System',
-    subtitle: 'Built a blockchain reward system using Solidity, MetaMask, and Ganache. Integrated smart contracts with a Tailwind frontend via Web3.js.',
+    subtitle: 'Blockchain reward system using Solidity, MetaMask, and Ganache with smart contracts and Web3.js frontend.',
     handle: 'Ganache • MetaMask • Smart Contracts',
-    borderColor: '#4338ca', // Indigo 700
+    borderColor: '#EAB308', // Yellow 500
     gradient: 'linear-gradient(135deg, transparent, transparent)',
     url: 'https://github.com/Mevishf/Campus-Karma-Coins',
   },
@@ -40,7 +40,7 @@ const projects: ChromaItem[] = [
   },
   {
     image: '/images/coffee-shop-app.png',
-    title: 'Coffee Shop App UI',
+    title: 'Coffee Shop Mobile App UI',
     subtitle: 'Mobile application design for coffee ordering and loyalty rewards.',
     handle: 'Figma • App Design',
     borderColor: '#5D4037', // Brown
@@ -52,7 +52,7 @@ const projects: ChromaItem[] = [
     title: 'Fashion E-commerce UI',
     subtitle: 'Fashion platform with advanced filtering and virtual try-on concepts.',
     handle: 'Figma • E-commerce',
-    borderColor: '#BE123C', // Rose 700
+    borderColor: '#D8B4FE', // Pastel Purple (Purple 300)
     gradient: 'linear-gradient(135deg, transparent, transparent)',
     url: 'https://www.figma.com/design/lU8FDX5EjQU2wbthQUO6xt/Clothing-store?m=auto&t=mUgTsM6n9lQ876EU-1',
   },
@@ -61,7 +61,7 @@ const projects: ChromaItem[] = [
     title: 'Cooking Recipe UI',
     subtitle: 'Interactive recipe sharing platform with step-by-step cooking modes.',
     handle: 'Figma • UI/UX',
-    borderColor: '#15803D', // Green 700
+    borderColor: '#FFC0CB', // Baby Pink
     gradient: 'linear-gradient(135deg, transparent, transparent)',
     url: 'https://www.figma.com/design/Es0x3G3eQVTa6Bbj0o0guk/cooking-recipe?m=auto&t=mUgTsM6n9lQ876EU-1',
   },
@@ -87,19 +87,19 @@ const projects: ChromaItem[] = [
 
 export default function Projects() {
   return (
-    <section id="projects" className="py-16 px-6 bg-transparent relative">
+    <section id="projects" className="py-12 sm:py-16 px-4 sm:px-6 bg-transparent relative">
       <div className="max-w-7xl mx-auto">
         <FadeIn>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif-display font-medium text-[#16253E] mb-6">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif-display font-medium text-[#16253E] mb-4 sm:mb-6">
               Main Characters
             </h2>
-            <div className="w-24 h-1 bg-[#16253E] mx-auto mt-6"></div>
+            <div className="w-20 sm:w-24 h-1 bg-[#16253E] mx-auto mt-4 sm:mt-6"></div>
           </div>
         </FadeIn>
 
         <FadeIn delay={0.2} fullWidth>
-          <div style={{ height: 'auto', minHeight: '800px', position: 'relative' }}>
+          <div style={{ height: 'auto', minHeight: '600px', position: 'relative' }}>
             <ChromaGrid
               items={projects}
               radius={400}

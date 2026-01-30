@@ -78,6 +78,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
     const marqueeInnerRef = useRef<HTMLDivElement>(null);
     const animationRef = useRef<gsap.core.Tween | null>(null);
     const [repetitions, setRepetitions] = useState(4);
+    const [isActive, setIsActive] = useState(false);
 
     const animationDefaults = { duration: 0.6, ease: 'expo' };
 
@@ -132,10 +133,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
         };
     }, [text, images, repetitions, speed]);
 
-    const handleMouseEnter = (ev: React.MouseEvent<HTMLAnchorElement>) => {
-        if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
-        const rect = itemRef.current.getBoundingClientRect();
-        const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
+    const showMarquee = (edge: 'top' | 'bottom') => {
+        if (!marqueeRef.current || !marqueeInnerRef.current) return;
 
         gsap
             .timeline({ defaults: animationDefaults })
@@ -144,15 +143,50 @@ const MenuItem: React.FC<MenuItemProps> = ({
             .to([marqueeRef.current, marqueeInnerRef.current], { y: '0%' }, 0);
     };
 
-    const handleMouseLeave = (ev: React.MouseEvent<HTMLAnchorElement>) => {
-        if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
-        const rect = itemRef.current.getBoundingClientRect();
-        const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
+    const hideMarquee = (edge: 'top' | 'bottom') => {
+        if (!marqueeRef.current || !marqueeInnerRef.current) return;
 
         gsap
             .timeline({ defaults: animationDefaults })
             .to(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
             .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0);
+    };
+
+    const handleMouseEnter = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+        if (!itemRef.current) return;
+        const rect = itemRef.current.getBoundingClientRect();
+        const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
+        showMarquee(edge);
+    };
+
+    const handleMouseLeave = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+        if (!itemRef.current) return;
+        const rect = itemRef.current.getBoundingClientRect();
+        const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
+        hideMarquee(edge);
+    };
+
+    const handleClick = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+        const isMobile = window.innerWidth < 768;
+
+        if (isMobile) {
+            ev.preventDefault();
+
+            if (isActive) {
+                // Second tap - navigate to link
+                window.location.href = link;
+            } else {
+                // First tap - show marquee
+                setIsActive(true);
+                showMarquee('top');
+
+                // Auto-hide after 3 seconds
+                setTimeout(() => {
+                    setIsActive(false);
+                    hideMarquee('top');
+                }, 3000);
+            }
+        }
     };
 
     return (
@@ -166,6 +200,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
                 href={link}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
+                onClick={handleClick}
                 style={{ color: textColor }}
             >
                 {text}

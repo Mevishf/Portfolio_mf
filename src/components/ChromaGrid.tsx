@@ -37,6 +37,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
     const setX = useRef<SetterFn | null>(null);
     const setY = useRef<SetterFn | null>(null);
     const pos = useRef({ x: 0, y: 0 });
+    const [flippedCards, setFlippedCards] = React.useState<Set<number>>(new Set());
 
     const demo: ChromaItem[] = [
         {
@@ -136,15 +137,32 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
         });
     };
 
-    const handleCardClick = (url?: string) => {
-        if (url) window.open(url, '_blank', 'noopener,noreferrer');
+    const handleCardClick = (index: number, url?: string) => {
+        // On mobile, tap flips the card. Must tap "View Project" button to navigate.
+        const isMobile = window.innerWidth < 768;
+
+        if (isMobile) {
+            if (!flippedCards.has(index)) {
+                // Flip the card
+                setFlippedCards(prev => new Set(prev).add(index));
+                // Auto-flip back after 5 seconds
+                setTimeout(() => {
+                    setFlippedCards(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(index);
+                        return newSet;
+                    });
+                }, 5000);
+            }
+        } else {
+            // Desktop: click opens URL
+            if (url) window.open(url, '_blank', 'noopener,noreferrer');
+        }
     };
 
-    const handleCardMove: React.MouseEventHandler<HTMLElement> = e => {
-        const c = e.currentTarget as HTMLElement;
-        const rect = c.getBoundingClientRect();
-        c.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        c.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+    const handleViewProjectClick = (e: React.MouseEvent, url?: string) => {
+        e.stopPropagation(); // Prevent card flip
+        if (url) window.open(url, '_blank', 'noopener,noreferrer');
     };
 
     // ... (previous code)
@@ -153,7 +171,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
             ref={rootRef}
             onPointerMove={handleMove}
             onPointerLeave={handleLeave}
-            className={`relative w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center ${className}`}
+            className={`relative w-full h-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 justify-items-center ${className}`}
             style={
                 {
                     '--r': `${radius}px`,
@@ -163,61 +181,99 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
             }
         >
             {data.map((c, i) => (
-                <div key={i} className="relative group">
+                <div key={i} className="relative group w-full flex justify-center">
                     <StarBorder
                         as="article"
-                        onClick={() => handleCardClick(c.url)}
-                        className="group/card relative w-[360px] h-[400px] cursor-pointer perspective-1000 transition-all duration-500 hover:-translate-y-2 bg-[#E8EBF5] border-4 border-[#16253E] rounded-[24px]"
+                        onClick={() => handleCardClick(i, c.url)}
+                        className="group/card relative w-[160px] h-[200px] sm:w-[200px] sm:h-[260px] md:w-[280px] md:h-[340px] lg:w-[360px] lg:h-[400px] cursor-pointer perspective-1000 transition-all duration-500 hover:-translate-y-2 bg-[#E8EBF5] border-2 md:border-4 border-[#16253E] rounded-[16px] md:rounded-[24px]"
                         color="#FFE6EA"
                         speed="5s"
                     >
-                        <div className="relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] group-hover/card:[transform:rotateY(180deg)] shadow-xl rounded-[20px]">
+                        <div className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] shadow-xl rounded-[14px] md:rounded-[20px] ${flippedCards.has(i) ? '[transform:rotateY(180deg)]' : 'group-hover/card:[transform:rotateY(180deg)]'}`}>
 
                             {/* Front Face */}
-                            <div className="absolute inset-0 w-full h-full [backface-visibility:hidden] rounded-[20px] overflow-hidden bg-[#16253E]">
-                                {/* Spotlight for Front */}
+                            <div className="absolute inset-0 w-full h-full [backface-visibility:hidden] rounded-[14px] md:rounded-[20px] overflow-hidden bg-[#E8EBF5] flex flex-col">
+                                {/* Image Section - Upper Portion */}
+                                <div className="relative h-[75%] overflow-hidden bg-[#16253E]">
+                                    {/* Spotlight for Front */}
+                                    <div
+                                        className="absolute inset-0 pointer-events-none transition-opacity duration-500 z-20 opacity-0 group-hover/card:opacity-100"
+                                        style={{
+                                            background: 'radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 70%)'
+                                        }}
+                                    />
+
+                                    <img
+                                        src={c.image}
+                                        alt={c.title}
+                                        loading="lazy"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+
+                                {/* Title Section - Lower Section */}
                                 <div
-                                    className="absolute inset-0 pointer-events-none transition-opacity duration-500 z-20 opacity-0 group-hover/card:opacity-100"
-                                    style={{
-                                        background: 'radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 70%)'
-                                    }}
-                                />
-
-                                <img
-                                    src={c.image}
-                                    alt={c.title}
-                                    loading="lazy"
-                                    className="w-full h-full object-cover rounded-[18px]"
-                                />
-
-                                {/* Overlay Title */}
-                                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#16253E]/90 to-transparent">
-                                    <h3 className="text-[#E8EBF5] text-2xl font-serif-display font-bold">{c.title}</h3>
+                                    className="h-[25%] p-2 sm:p-3 md:p-4 flex items-center justify-center border-t-2 border-white/20"
+                                    style={{ backgroundColor: c.borderColor }}
+                                >
+                                    <h3
+                                        className="text-[0.6rem] sm:text-sm md:text-base lg:text-xl font-serif-display font-bold text-center leading-tight line-clamp-2"
+                                        style={{
+                                            color: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? '#1e3a8a' : 'white'
+                                        }}
+                                    >
+                                        {c.title}
+                                    </h3>
                                 </div>
                             </div>
 
                             {/* Back Face */}
                             <div
-                                className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[20px] overflow-hidden p-8 flex flex-col items-center justify-center text-center border-4"
+                                className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[14px] md:rounded-[20px] overflow-hidden p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center text-center border-2 md:border-4"
                                 style={{
                                     backgroundColor: c.borderColor,
                                     borderColor: 'rgba(255,255,255,0.1)'
                                 }}
                             >
-                                <h3 className="text-white text-xl font-bold font-serif-display mb-4 drop-shadow-md">{c.title}</h3>
-                                <p className="text-white/90 text-sm leading-relaxed mb-6 font-sans font-medium">
+                                <h3
+                                    className="text-xs sm:text-lg md:text-xl font-bold font-serif-display mb-2 sm:mb-3 md:mb-4 drop-shadow-md leading-tight px-1"
+                                    style={{
+                                        color: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? '#1e3a8a' : 'white'
+                                    }}
+                                >
+                                    {c.title}
+                                </h3>
+                                <p
+                                    className="text-[0.55rem] sm:text-sm md:text-base leading-tight mb-3 sm:mb-4 md:mb-6 font-sans font-medium px-2"
+                                    style={{
+                                        color: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? '#1e3a8a' : 'rgba(255,255,255,0.9)'
+                                    }}
+                                >
                                     {c.subtitle}
                                 </p>
 
                                 {c.handle && (
                                     <div className="mt-auto">
-                                        <span className="inline-block px-3 py-1 border border-white/30 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white font-mono tracking-wide">
+                                        <span
+                                            className="inline-block px-2 py-1 sm:px-3 sm:py-1 border bg-white/10 backdrop-blur-sm rounded-full text-[0.6rem] sm:text-xs font-mono tracking-wide"
+                                            style={{
+                                                color: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? '#1e3a8a' : 'white',
+                                                borderColor: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? 'rgba(30,58,138,0.3)' : 'rgba(255,255,255,0.3)'
+                                            }}
+                                        >
                                             {c.handle}
                                         </span>
                                     </div>
                                 )}
 
-                                <div className="mt-6 text-white text-sm font-bold uppercase tracking-widest flex items-center gap-2 group-hover/card:gap-3 transition-all border-b-2 border-white/50 pb-1">
+                                <div
+                                    onClick={(e) => handleViewProjectClick(e, c.url)}
+                                    className="mt-2 sm:mt-4 md:mt-6 text-[0.6rem] sm:text-sm md:text-base font-bold uppercase tracking-wider flex items-center gap-1 sm:gap-2 group-hover/card:gap-3 transition-all border-b pb-0.5 sm:pb-1 cursor-pointer"
+                                    style={{
+                                        color: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? '#1e3a8a' : 'white',
+                                        borderColor: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? 'rgba(30,58,138,0.5)' : 'rgba(255,255,255,0.5)'
+                                    }}
+                                >
                                     View Project <span>→</span>
                                 </div>
                             </div>

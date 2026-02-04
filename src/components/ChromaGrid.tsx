@@ -229,14 +229,14 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
 
                             {/* Back Face */}
                             <div
-                                className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[14px] md:rounded-[20px] overflow-hidden p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center text-center border-2 md:border-4"
+                                className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[14px] md:rounded-[20px] overflow-hidden p-3 sm:p-6 md:p-8 flex flex-col items-center justify-center text-center border-2 md:border-4 overflow-y-auto scrollbar-hide"
                                 style={{
                                     backgroundColor: c.borderColor,
                                     borderColor: 'rgba(255,255,255,0.1)'
                                 }}
                             >
                                 <h3
-                                    className="text-xs sm:text-lg md:text-xl font-bold font-serif-display mb-2 sm:mb-3 md:mb-4 drop-shadow-md leading-tight px-1"
+                                    className="text-xs sm:text-lg md:text-xl font-bold font-serif-display mb-1 sm:mb-3 md:mb-4 drop-shadow-md leading-tight px-1 shrink-0"
                                     style={{
                                         color: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? '#1e3a8a' : 'white'
                                     }}
@@ -244,7 +244,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                                     {c.title}
                                 </h3>
                                 <p
-                                    className="text-[0.55rem] sm:text-sm md:text-base leading-tight mb-3 sm:mb-4 md:mb-6 font-sans font-medium px-2"
+                                    className="text-[0.55rem] sm:text-sm md:text-base leading-tight mb-2 sm:mb-4 md:mb-6 font-sans font-medium px-1"
                                     style={{
                                         color: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? '#1e3a8a' : 'rgba(255,255,255,0.9)'
                                     }}
@@ -268,7 +268,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
 
                                 <div
                                     onClick={(e) => handleViewProjectClick(e, c.url)}
-                                    className="mt-2 sm:mt-4 md:mt-6 text-[0.6rem] sm:text-sm md:text-base font-bold uppercase tracking-wider flex items-center gap-1 sm:gap-2 group-hover/card:gap-3 transition-all border-b pb-0.5 sm:pb-1 cursor-pointer"
+                                    className="mt-2 sm:mt-4 md:mt-6 text-[0.55rem] sm:text-sm md:text-base font-bold uppercase tracking-wider flex items-center gap-1 sm:gap-2 group-hover/card:gap-3 transition-all border-b pb-0.5 sm:pb-1 cursor-pointer shrink-0"
                                     style={{
                                         color: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? '#1e3a8a' : 'white',
                                         borderColor: ['#BFDBFE', '#EAB308', '#FFC0CB', '#D8B4FE'].includes(c.borderColor || '') ? 'rgba(30,58,138,0.5)' : 'rgba(255,255,255,0.5)'

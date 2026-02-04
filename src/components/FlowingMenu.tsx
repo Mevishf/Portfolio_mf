@@ -31,6 +31,9 @@ interface MenuItemProps extends MenuItemDataUpdated {
     marqueeTextColor: string;
     borderColor: string;
     isFirst: boolean;
+    idx: number;
+    activeItem: number | null;
+    setActiveItem: (index: number | null) => void;
 }
 
 const FlowingMenu: React.FC<FlowingMenuProps> = ({
@@ -42,6 +45,8 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({
     marqueeTextColor = '#060010',
     borderColor = '#fff'
 }) => {
+    const [activeItem, setActiveItem] = useState<number | null>(null);
+
     return (
         <div className="w-full h-full overflow-hidden" style={{ backgroundColor: bgColor }}>
             <nav className="flex flex-col h-full m-0 p-0">
@@ -55,6 +60,9 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({
                         marqueeTextColor={marqueeTextColor}
                         borderColor={borderColor}
                         isFirst={idx === 0}
+                        idx={idx}
+                        activeItem={activeItem}
+                        setActiveItem={setActiveItem}
                     />
                 ))}
             </nav>
@@ -71,14 +79,18 @@ const MenuItem: React.FC<MenuItemProps> = ({
     marqueeBgColor,
     marqueeTextColor,
     borderColor,
-    isFirst
+    isFirst,
+    idx,
+    activeItem,
+    setActiveItem
 }) => {
     const itemRef = useRef<HTMLDivElement>(null);
     const marqueeRef = useRef<HTMLDivElement>(null);
     const marqueeInnerRef = useRef<HTMLDivElement>(null);
     const animationRef = useRef<gsap.core.Tween | null>(null);
     const [repetitions, setRepetitions] = useState(4);
-    const [isActive, setIsActive] = useState(false);
+
+    const isItemActive = activeItem === idx;
 
     const animationDefaults = { duration: 0.6, ease: 'expo' };
 
@@ -152,7 +164,21 @@ const MenuItem: React.FC<MenuItemProps> = ({
             .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0);
     };
 
+    useEffect(() => {
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+            if (isItemActive) {
+                showMarquee('top');
+            } else {
+                hideMarquee('top');
+            }
+        }
+    }, [isItemActive]);
+
     const handleMouseEnter = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) return;
+
         if (!itemRef.current) return;
         const rect = itemRef.current.getBoundingClientRect();
         const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
@@ -160,6 +186,9 @@ const MenuItem: React.FC<MenuItemProps> = ({
     };
 
     const handleMouseLeave = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) return;
+
         if (!itemRef.current) return;
         const rect = itemRef.current.getBoundingClientRect();
         const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
@@ -171,20 +200,10 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
         if (isMobile) {
             ev.preventDefault();
-
-            if (isActive) {
-                // Second tap - navigate to link
+            if (activeItem === idx) {
                 window.location.href = link;
             } else {
-                // First tap - show marquee
-                setIsActive(true);
-                showMarquee('top');
-
-                // Auto-hide after 3 seconds
-                setTimeout(() => {
-                    setIsActive(false);
-                    hideMarquee('top');
-                }, 3000);
+                setActiveItem(idx);
             }
         }
     };
